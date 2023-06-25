@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>在线键盘测试</title>
+    <meta name="description" content="键盘测试工具"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#000000">
+    <link type="text/css" rel="stylesheet" href="index.css"/>
+    <script type="text/javascript" src="index.js"></script>
+		<!--
+        <script>
+        var URL_GA_PROXY = getHttpScheme() + "api.zfrontier.com";
+        zfGaStat.init('UA-78125205-1', zfLogin.getUid());
+    </script> -->
+    <link rel="prefetch" href="keyup.mp3">
+    <link rel="prefetch" href="keydown.mp3">
+</head>
+<body>
+<div class="row main">
+    <div class="keyboard-wrap">
+        <div class="keyboard" id="app-root">
+            <svg class="kb-preview" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="210 20 1000 400" xml:space="preserve"
+                 width="1120px" height="325px">
+              <g id="kb" transform="translate(50,50)">
+                  <keycap v-for="key in kInfoList" :k-info="key" :key="key.K"></keycap>
+              </g>
+            </svg>
+        </div>
+        <div class="footer" style="position: relative">
+            <div class="status-color">
+                <div class="color active"></div>
+                <span>Active</span>
+                <div class="color pressed"></div>
+                <span>Pressed</span>
+                <div class="color never"></div>
+                <span>Never</span>
+                <span class="btn reset-history">重置</span>
+            </div>
+            <div class="apm-info">
+                <div class="left">
+                    <div><span class="bold">APM <span class="big" id="num-apm">0</span></span></div>
+                    <div>实时每分钟触发次数</div>
+                </div>
+                <div class="right" id="apm-canvas"></div>
+            </div>
+            <div class="help">
+                <div style="display: flex;align-items:center;" id="voice-sel" class="voice on">
+                    <div>
+                        <i class="iconfont icon-volumeoff"></i>
+                        <i class="iconfont icon-volumeup"></i>
+                    </div>
+                    键盘声音
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="key-log">
+        <div class="log-list"></div>
+        <div class="info">
+            <div style="padding: 17px 0 15px 0;">
+                由于浏览器API的限制，可能无法测试以下按键和某些快捷键
+            </div>
+            <div><span class="btn">Menu</span></div>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/x-template" id="t-keycap">
+    <g :transform="'translate('+ svgX +','+ svgY +')'" :id="kInfo.id">
+        <rect class="key-base-color" :style="{fill:kInfo.baseColor, stroke:kInfo.selected ? '#222': 'none'}"
+              x="-25.8" y="-25.8" rx="1.5" :width="svgW - 2" :height="svgH - 2"></rect>
+
+        <use :href="keysideClass"></use>
+
+        <g :clip-path="kInfo.clipPath">
+            <template v-for="layer in finalVal">
+                <template v-if="layer.type === 't'">
+                    <text :x="layer.align.x" :y="layer.align.y" dy="0" class="key-top-color"
+                          :text-anchor="layer.align.h" :alignment-baseline="layer.align.v"
+                          :font-family="layer.font" :font-size="layer.size"
+                          :style="{fill:kInfo.fontColor}"
+                          v-html="layer.t"></text>
+                </template>
+                <template v-else-if="layer.type === 's'">
+                    <g :style="{fill:kInfo.fontColor}" class="key-top-color"
+                       v-html="layer.sRaw"></g>
+                </template>
+            </template>
+        </g>
+    </g>
+</script>
+</body>
+</html>
